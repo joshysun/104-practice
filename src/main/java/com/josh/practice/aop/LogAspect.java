@@ -59,7 +59,7 @@ public class LogAspect {
 
     @AfterReturning(pointcut = "pointcut()", returning = "result")
     public void afterReturning(JoinPoint joinPoint, Object result) {
-        System.out.println("-----after returning advice starts=====");
+        System.out.println("=====after returning advice starts=====");
         if (result != null) {
             System.out.println(result);
         }
