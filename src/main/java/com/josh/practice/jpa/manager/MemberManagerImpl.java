@@ -4,6 +4,8 @@ import com.josh.practice.jpa.handler.MemberHandler;
 import com.josh.practice.jpa.model.Member;
 import com.josh.practice.jpa.model.dto.MemberDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,8 +19,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class MemberManagerImpl implements MemberManager {
+    public static final String HASH_KEY = "Members";
     @Autowired
     private MemberHandler memberHandler;
+    @Autowired
+    @Qualifier("template")
+    private RedisTemplate redisTemplate;
 
     @Override
     public ResponseEntity<?> addMember(Member member, HttpServletResponse response) {
@@ -77,5 +83,24 @@ public class MemberManagerImpl implements MemberManager {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Override
+    public ResponseEntity<?> redisGetMemberById(Integer id) {
+        // 先從redis找
+        Member member = (Member) redisTemplate.opsForHash().get(HASH_KEY, id);
+        // 如果不等於null，代表redis有資料，直接回傳
+        if (member != null) {
+            return ResponseEntity.ok(member);
+        }
+        // redis沒資料，去DB撈
+        Member memberFromDB = memberHandler.findById(id).orElse(null);
+        // 如果DB也沒資料，直接回傳NO_CONTENT
+        if (memberFromDB == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        // 有資料的話，存進去Redis
+        redisTemplate.opsForHash().putIfAbsent(HASH_KEY, memberFromDB.getId(), memberFromDB);
+        return ResponseEntity.ok(memberFromDB);
     }
 }

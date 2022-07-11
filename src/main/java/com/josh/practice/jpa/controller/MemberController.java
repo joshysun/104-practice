@@ -44,4 +44,13 @@ public class MemberController {
     public ResponseEntity<?> deleteMemberByIdList(@RequestBody MemberDto memberDto) {
         return memberManager.deleteMember(memberDto);
     }
+
+    /**
+     * 測試redis流程，用id找使用者資料
+     * 先從redis找，沒資料的話去db找，再回寫到redis
+     */
+    @GetMapping("/redis-test/members/{id}")
+    public ResponseEntity<?> redisGetMemberById(@PathVariable Integer id, HttpServletResponse response) {
+        return memberManager.redisGetMemberById(id);
+    }
 }

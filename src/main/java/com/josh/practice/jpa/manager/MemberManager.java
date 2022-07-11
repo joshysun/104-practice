@@ -19,4 +19,6 @@ public interface MemberManager {
     ResponseEntity<?> deleteMemberById(Integer id);
 
     ResponseEntity<?> deleteMember(MemberDto memberDto);
+
+    ResponseEntity<?> redisGetMemberById(Integer id);
 }
