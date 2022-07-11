@@ -15,11 +15,13 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
 public class MemberManagerImpl implements MemberManager {
     public static final String HASH_KEY = "Members";
+    public static final long MILLI_SECONDS_OF_ONE_DAY = 86400000L;
     @Autowired
     private MemberHandler memberHandler;
     @Autowired
@@ -101,6 +103,7 @@ public class MemberManagerImpl implements MemberManager {
         }
         // 有資料的話，存進去Redis
         redisTemplate.opsForHash().putIfAbsent(HASH_KEY, memberFromDB.getId(), memberFromDB);
+        redisTemplate.expire(HASH_KEY, MILLI_SECONDS_OF_ONE_DAY, TimeUnit.MILLISECONDS);
         return ResponseEntity.ok(memberFromDB);
     }
 }
