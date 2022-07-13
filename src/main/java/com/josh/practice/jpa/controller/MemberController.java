@@ -2,12 +2,12 @@ package com.josh.practice.jpa.controller;
 
 import com.josh.practice.jpa.manager.MemberManager;
 import com.josh.practice.jpa.model.Member;
-import com.josh.practice.jpa.model.dto.MemberDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -41,8 +41,8 @@ public class MemberController {
     }
 
     @DeleteMapping("/members")
-    public ResponseEntity<?> deleteMemberByIdList(@RequestBody MemberDto memberDto) {
-        return memberManager.deleteMember(memberDto);
+    public ResponseEntity<?> deleteMemberByIdList(@RequestParam List<Integer> deleteIdList) {
+        return memberManager.deleteMember(deleteIdList);
     }
 
     /**

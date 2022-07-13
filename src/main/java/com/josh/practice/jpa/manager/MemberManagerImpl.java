@@ -2,7 +2,6 @@ package com.josh.practice.jpa.manager;
 
 import com.josh.practice.jpa.handler.MemberHandler;
 import com.josh.practice.jpa.model.Member;
-import com.josh.practice.jpa.model.dto.MemberDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -13,10 +12,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 public class MemberManagerImpl implements MemberManager {
@@ -75,10 +72,8 @@ public class MemberManagerImpl implements MemberManager {
     }
 
     @Override
-    public ResponseEntity<?> deleteMember(MemberDto memberDto) {
+    public ResponseEntity<?> deleteMember(List<Integer> deleteIdList) {
         try {
-            List<Integer> deleteIdList = Arrays.stream(memberDto.getDeleteIdArray()).collect(Collectors.toList());
-
             memberHandler.deleteAllById(deleteIdList);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {

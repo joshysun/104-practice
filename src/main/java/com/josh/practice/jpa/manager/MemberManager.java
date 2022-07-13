@@ -1,7 +1,6 @@
 package com.josh.practice.jpa.manager;
 
 import com.josh.practice.jpa.model.Member;
-import com.josh.practice.jpa.model.dto.MemberDto;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +17,7 @@ public interface MemberManager {
 
     ResponseEntity<?> deleteMemberById(Integer id);
 
-    ResponseEntity<?> deleteMember(MemberDto memberDto);
+    ResponseEntity<?> deleteMember(List<Integer> deleteIdList);
 
     ResponseEntity<?> redisGetMemberById(Integer id);
 }
